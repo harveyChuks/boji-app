@@ -223,7 +223,7 @@ async function sendMonthlyReport(
   `;
 
   await resend.emails.send({
-    from: "BizFlow Reports <onboarding@resend.dev>",
+    from: "Boji <admin@bojiapp.me>",
     to: [data.ownerEmail],
     subject: `📊 Your Monthly Report - ${monthYear}`,
     html,
