@@ -36,7 +36,8 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha>(null);
   
-  const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY || "735c34e4-d862-4c18-8f7e-28f46a2aaea0";
+  // NOTE: Lovable doesn't support using VITE_* env vars in runtime code.
+  const HCAPTCHA_SITE_KEY = "735c34e4-d862-4c18-8f7e-28f46a2aaea0";
   
   // Login state
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -191,10 +192,20 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       return;
     }
 
+    if (!captchaToken) {
+      toast({
+        title: "Captcha Required",
+        description: "Please complete the captcha verification",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(forgotPasswordEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
+        captchaToken,
       });
 
       if (error) throw error;
@@ -203,9 +214,14 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
         title: "Check Your Email",
         description: "We've sent you a password reset link. Please check your email.",
       });
+
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
       setShowForgotPassword(false);
       setForgotPasswordEmail("");
     } catch (error: any) {
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
       toast({
         title: "Error",
         description: error.message || "Failed to send password reset email",
@@ -246,11 +262,23 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
               />
             </div>
 
+              <div className="flex justify-center">
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                  onError={() => setCaptchaToken(null)}
+                />
+              </div>
+
             <div className="flex gap-2">
               <Button
                 onClick={() => {
                   setShowForgotPassword(false);
                   setForgotPasswordEmail("");
+                    setCaptchaToken(null);
+                    captchaRef.current?.resetCaptcha();
                 }}
                 variant="outline"
                 disabled={loading}
@@ -260,7 +288,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
               </Button>
               <Button
                 onClick={handleForgotPassword}
-                disabled={loading}
+                  disabled={loading || !captchaToken}
                 className="flex-1"
               >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -295,7 +323,11 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
                   <Label htmlFor="login-password" className="text-foreground">Password</Label>
                   <button
                     type="button"
-                    onClick={() => setShowForgotPassword(true)}
+                    onClick={() => {
+                      setShowForgotPassword(true);
+                      setCaptchaToken(null);
+                      captchaRef.current?.resetCaptcha();
+                    }}
                     className="text-xs text-primary hover:underline"
                   >
                     Forgot password?
