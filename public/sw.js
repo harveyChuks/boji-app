@@ -19,12 +19,25 @@ self.addEventListener('install', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
+  const request = event.request;
+
+  // IMPORTANT:
+  // - Never try to handle non-GET requests (e.g. Supabase Auth POST /token, /recover).
+  //   The Cache API only supports GET; attempting to cache-match POST can break requests.
+  // - Never try to cache cross-origin requests.
+  const url = new URL(request.url);
+  const isSameOrigin = url.origin === self.location.origin;
+
+  if (request.method !== 'GET' || !isSameOrigin) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) return cachedResponse;
+      return fetch(request);
+    })
   );
 });
 
