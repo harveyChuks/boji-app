@@ -18,7 +18,7 @@ import { useTimeBasedTheme } from "@/hooks/useTimeBasedTheme";
 import { usePasswordRecovery } from "@/hooks/usePasswordRecovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "@/lib/router-compat";
 import StatisticsOverview from "@/components/StatisticsOverview";
 import ProfileManagement from "@/components/ProfileManagement";
 import ServicesManagement from "@/components/ServicesManagement";

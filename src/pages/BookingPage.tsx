@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams } from "@/lib/router-compat";
 import PublicBooking from "@/components/PublicBooking";
 
 const BookingPage = () => {
