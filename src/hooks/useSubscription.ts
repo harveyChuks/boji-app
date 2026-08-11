@@ -83,6 +83,7 @@ export const useSubscription = (businessId?: string) => {
         supabase.removeChannel(channel);
       };
     }
+    return undefined;
   }, [businessId]);
 
   return {

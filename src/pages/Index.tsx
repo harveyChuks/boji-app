@@ -272,6 +272,7 @@ const Index = () => {
         supabase.removeChannel(channel);
       };
     }
+    return undefined;
   }, [userBusiness]);
 
   const filteredClients = recentClients.filter(client =>
