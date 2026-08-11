@@ -84,6 +84,7 @@ serve(async (req) => {
         customer_name,
         customer_email,
         customer_phone,
+        customer_address,
         notes,
         business_id,
         service_id
@@ -125,6 +126,7 @@ serve(async (req) => {
           appointmentId: appointment.id,
           customerEmail: appointment.customer_email,
           customerName: appointment.customer_name,
+          customerAddress: appointment.customer_address,
           businessName: business.name,
           serviceName: service.name,
           appointmentDate: appointment.appointment_date,
@@ -147,6 +149,7 @@ serve(async (req) => {
           customerName: appointment.customer_name,
           customerPhone: appointment.customer_phone,
           customerEmail: appointment.customer_email,
+          customerAddress: appointment.customer_address,
           businessName: business.name,
           serviceName: service.name,
           appointmentDate: appointment.appointment_date,

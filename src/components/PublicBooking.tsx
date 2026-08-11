@@ -100,6 +100,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
     customer_name: "",
     customer_phone: "",
     customer_email: "",
+    customer_address: "",
     selected_services: [] as string[],
     staff_id: "",
     notes: ""
@@ -366,6 +367,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customer_name: formData.customer_name,
           customer_phone: formData.customer_phone,
           customer_email: formData.customer_email || undefined,
+          customer_address: formData.customer_address || undefined,
           notes: formData.notes || undefined
         };
 
@@ -1105,6 +1107,19 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                   />
                 </div>
                 
+                <div className="space-y-2">
+                  <Label htmlFor="customer_address" className="text-foreground">Address (Optional)</Label>
+                  <Textarea
+                    id="customer_address"
+                    value={formData.customer_address}
+                    onChange={(e) => handleInputChange("customer_address", e.target.value)}
+                    className="bg-background border-border text-foreground"
+                    placeholder="Your address (useful if the service comes to you)"
+                    rows={2}
+                    maxLength={300}
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="notes" className="text-foreground">Special Requests (Optional)</Label>
                   <Textarea
