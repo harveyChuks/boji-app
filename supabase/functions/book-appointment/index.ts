@@ -102,7 +102,7 @@ serve(async (req) => {
     // Fetch business and service details for email notifications
     const { data: business } = await supabaseClient
       .from('businesses')
-      .select('name, phone, email, owner_id, address')
+      .select('name, phone, email, owner_id, address, currency')
       .eq('id', appointment.business_id)
       .single();
 
@@ -133,6 +133,7 @@ serve(async (req) => {
           startTime: appointment.start_time,
           endTime: appointment.end_time,
           price: service.price,
+          currency: business.currency,
           businessPhone: business.phone,
           businessAddress: business.address,
           notes: appointment.notes
@@ -156,6 +157,7 @@ serve(async (req) => {
           startTime: appointment.start_time,
           endTime: appointment.end_time,
           price: service.price,
+          currency: business.currency,
           notes: appointment.notes
         }
       }).catch(err => console.error('Failed to send owner notification:', err));
