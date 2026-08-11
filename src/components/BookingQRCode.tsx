@@ -14,7 +14,14 @@ const BookingQRCode = ({ bookingLink, businessName }: BookingQRCodeProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrGenerated, setQrGenerated] = useState(false);
   
-  const fullUrl = `${window.location.origin}/booking/${bookingLink}`;
+  // Always point the QR at the live public booking route (never a preview/localhost URL)
+  const origin =
+    typeof window !== "undefined" &&
+    !/localhost|127\.0\.0\.1|lovableproject\.com|lovable\.app/.test(window.location.hostname)
+      ? window.location.origin
+      : "https://bojiapp.me";
+
+  const fullUrl = `${origin}/book/${bookingLink}`;
 
   useEffect(() => {
     if (canvasRef.current) {
