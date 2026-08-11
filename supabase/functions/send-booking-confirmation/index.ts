@@ -19,6 +19,7 @@ interface BookingConfirmationRequest {
   endTime: string;
   price: number;
   businessPhone?: string;
+  customerAddress?: string;
   notes?: string;
 }
 
@@ -39,6 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       endTime,
       price,
       businessPhone,
+      customerAddress,
       notes,
     }: BookingConfirmationRequest = await req.json();
 
@@ -110,6 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
               </table>
               
               ${businessPhone ? `<p style="margin-top: 15px; margin-bottom: 0;"><strong>Contact:</strong> ${businessPhone}</p>` : ''}
+              ${customerAddress ? `<p style="margin-top: 10px; margin-bottom: 0;"><strong>Your address:</strong> ${customerAddress}</p>` : ''}
               ${notes ? `<p style="margin-top: 10px; margin-bottom: 0;"><strong>Notes:</strong> ${notes}</p>` : ''}
             </div>
             
