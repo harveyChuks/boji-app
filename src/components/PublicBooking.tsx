@@ -314,17 +314,6 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       return;
     }
 
-    // Require authentication for booking
-    if (!isAuthenticated || !user) {
-      setShowAuthModal(true);
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in or create an account to book an appointment.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!formData.customer_name || !formData.customer_phone) {
       toast({
         title: "Missing Information",
