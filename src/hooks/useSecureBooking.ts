@@ -53,21 +53,12 @@ export const useSecureBooking = () => {
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to book an appointment.",
-          variant: "destructive",
-        });
-        return null;
-      }
 
       const { data, error } = await supabase.functions.invoke('book-appointment', {
         body: bookingData,
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
+        headers: session
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : undefined
       });
 
       if (error) {
