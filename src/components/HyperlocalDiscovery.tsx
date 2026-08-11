@@ -26,7 +26,7 @@ const HyperlocalDiscovery = () => {
   const [nearbyBusinesses, setNearbyBusinesses] = useState<NearbyBusiness[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [searchRadius, setSearchRadius] = useState(10);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
   const [businessTypeFilter, setBusinessTypeFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [locationPermission, setLocationPermission] = useState<'pending' | 'granted' | 'denied'>('pending');
@@ -211,7 +211,7 @@ const HyperlocalDiscovery = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date().toISOString().slice(0, 10)}
               />
             </div>
             <div>

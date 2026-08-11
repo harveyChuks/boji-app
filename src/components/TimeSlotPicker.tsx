@@ -9,7 +9,7 @@ interface TimeSlotPickerProps {
   businessId: string;
   date: string;
   durationMinutes: number;
-  staffId?: string;
+  staffId?: string | undefined;
   selectedTime: string;
   onTimeSelect: (time: string) => void;
 }
@@ -102,7 +102,7 @@ const TimeSlotPicker = ({
     if (!s || !s.is_available) return false;
     
     // If selected date is today, filter out past time slots
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().slice(0, 10);
     if (date === today) {
       const now = new Date();
       const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes

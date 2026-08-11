@@ -130,7 +130,7 @@ const Index = () => {
 
     setLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().slice(0, 10);
       
       // Fetch today's appointments with service details
       const { data: appointments } = await supabase
@@ -177,7 +177,7 @@ const Index = () => {
       const uniqueCustomerCount = new Set(uniqueCustomers?.map(a => a.customer_id)).size;
 
       // Calculate weekly appointments (last 7 days)
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const { count: weeklyCount } = await supabase
         .from('appointments')
         .select('*', { count: 'exact', head: true })
@@ -204,7 +204,7 @@ const Index = () => {
       // Calculate this month's revenue
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
-      const startOfMonthStr = startOfMonth.toISOString().split('T')[0];
+      const startOfMonthStr = startOfMonth.toISOString().slice(0, 10);
       
       const { data: monthlyCompletedAppointments } = await supabase
         .from('appointments')

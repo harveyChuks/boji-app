@@ -84,7 +84,7 @@ const StatisticsOverview = () => {
       const uniqueClientCount = new Set(uniqueCustomers?.map(a => a.customer_id)).size;
 
       // Get today's bookings
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().slice(0, 10);
       const { count: todayCount } = await supabase
         .from('appointments')
         .select('*', { count: 'exact', head: true })
@@ -99,7 +99,7 @@ const StatisticsOverview = () => {
         .from('appointments')
         .select('*', { count: 'exact', head: true })
         .eq('business_id', business.id)
-        .gte('appointment_date', weekStart.toISOString().split('T')[0])
+        .gte('appointment_date', weekStart.toISOString().slice(0, 10))
         .neq('status', 'cancelled');
 
       // Get total bookings
@@ -112,7 +112,7 @@ const StatisticsOverview = () => {
       // Calculate monthly revenue from completed appointments
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
-      const startOfMonthStr = startOfMonth.toISOString().split('T')[0];
+      const startOfMonthStr = startOfMonth.toISOString().slice(0, 10);
       
       const { data: monthlyCompletedAppointments } = await supabase
         .from('appointments')

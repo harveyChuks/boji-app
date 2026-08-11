@@ -11,8 +11,8 @@ interface ReviewModalProps {
   onOpenChange: (open: boolean) => void;
   businessId: string;
   customerName: string;
-  customerEmail?: string;
-  appointmentId?: string;
+  customerEmail?: string | undefined;
+  appointmentId?: string | undefined;
 }
 
 export const ReviewModal = ({ 

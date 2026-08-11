@@ -34,8 +34,8 @@ const VisitAnalytics = ({ businessId }: { businessId?: string }) => {
       let query = supabase
         .from('page_visits')
         .select('*')
-        .gte('visit_date', startDate.toISOString().split('T')[0])
-        .lte('visit_date', endDate.toISOString().split('T')[0]);
+        .gte('visit_date', startDate.toISOString().slice(0, 10))
+        .lte('visit_date', endDate.toISOString().slice(0, 10));
 
       // If businessId is provided, filter by business
       if (businessId) {

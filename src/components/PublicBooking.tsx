@@ -81,8 +81,8 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
   const [portfolioScrollPosition, setPortfolioScrollPosition] = useState(0);
   const [lastAppointmentData, setLastAppointmentData] = useState<{
     customerName: string;
-    customerEmail?: string;
-    appointmentId?: string;
+    customerEmail?: string | undefined;
+    appointmentId?: string | undefined;
   } | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState("");
@@ -371,7 +371,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           notes: formData.notes || undefined
         };
 
-        return createBooking(bookingData);
+        return createBooking(bookingData as any);
       });
 
       const results = await Promise.all(appointmentPromises);
@@ -486,7 +486,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customerPhone: messageData.phone || 'Not provided',
           customerEmail: messageData.email || 'Not provided',
           serviceName: 'Customer Message',
-          appointmentDate: new Date().toISOString().split('T')[0],
+          appointmentDate: new Date().toISOString().slice(0, 10),
           startTime: '',
           endTime: '',
           price: 0,
