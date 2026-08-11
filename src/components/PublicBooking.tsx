@@ -101,6 +101,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
     customer_phone: "",
     customer_email: "",
     customer_address: "",
+    customer_postcode: "",
     selected_services: [] as string[],
     staff_id: "",
     notes: ""
@@ -367,7 +368,10 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customer_name: formData.customer_name,
           customer_phone: formData.customer_phone,
           customer_email: formData.customer_email || undefined,
-          customer_address: formData.customer_address || undefined,
+          customer_address:
+            [formData.customer_address.trim(), formData.customer_postcode.trim()]
+              .filter(Boolean)
+              .join(', ') || undefined,
           notes: formData.notes || undefined,
           // Only the first booking triggers notification emails, and it carries
           // every selected service so a single email covers the whole booking.
@@ -1129,6 +1133,18 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                     placeholder="Your address (useful if the service comes to you)"
                     rows={2}
                     maxLength={300}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="customer_postcode" className="text-foreground">Post Code (Optional)</Label>
+                  <Input
+                    id="customer_postcode"
+                    value={formData.customer_postcode}
+                    onChange={(e) => handleInputChange("customer_postcode", e.target.value.toUpperCase())}
+                    className="bg-background border-border text-foreground"
+                    placeholder="e.g. SW1A 1AA"
+                    maxLength={12}
                   />
                 </div>
 
