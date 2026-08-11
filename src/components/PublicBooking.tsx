@@ -368,7 +368,19 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customer_phone: formData.customer_phone,
           customer_email: formData.customer_email || undefined,
           customer_address: formData.customer_address || undefined,
-          notes: formData.notes || undefined
+          notes: formData.notes || undefined,
+          // Only the first booking triggers notification emails, and it carries
+          // every selected service so a single email covers the whole booking.
+          notify: index === 0,
+          ...(index === 0
+            ? {
+                all_services: selectedServices.map(s => ({
+                  name: s.name,
+                  price: s.price || 0,
+                  duration_minutes: s.duration_minutes,
+                })),
+              }
+            : {}),
         };
 
         return createBooking(bookingData as any);
