@@ -1174,6 +1174,20 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                 >
                   {bookingLoading ? "Booking..." : "Book Appointment"}
                 </Button>
+
+                {!isAuthenticated && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    No account needed — book as a guest.{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowAuthModal(true)}
+                      className="underline text-primary hover:opacity-80"
+                    >
+                      Create an account
+                    </button>{" "}
+                    to track bookings and unlock loyalty discounts.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>
