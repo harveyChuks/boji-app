@@ -10,6 +10,7 @@
  */
 
 @theme inline {
+  --radius-xs: 0.25rem; /* preserves v3 bare `rounded` size */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
