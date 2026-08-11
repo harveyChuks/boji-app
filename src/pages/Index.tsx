@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Calendar, Users, Scissors, Clock, Plus, Search, LogOut, Building, BarChart3, Menu, ShieldCheck, User, Camera, TrendingUp, MessageCircle, CreditCard, Settings, Home, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ import ReportsAnalytics from "@/components/ReportsAnalytics";
 import WhatsAppIntegration from "@/components/WhatsAppIntegration";
 import LocalPaymentsIntegration from "@/components/LocalPaymentsIntegration";
 import { useBookingNotifications } from "@/hooks/useBookingNotifications";
+import NewBookingAlert, { PendingBooking } from "@/components/NewBookingAlert";
 
 // Currency formatting function
 const formatCurrency = (amount: number, currency: string = 'NGN') => {
@@ -58,9 +59,15 @@ const Index = () => {
   
   // State for business
   const [userBusiness, setUserBusiness] = useState(null);
-  
+
+  // Pop-up alert for new bookings needing confirmation
+  const [pendingBooking, setPendingBooking] = useState<PendingBooking | null>(null);
+  const handleNewBooking = useCallback((booking: PendingBooking) => {
+    setPendingBooking(booking);
+  }, []);
+
   // Enable booking notifications for business owner
-  useBookingNotifications(userBusiness?.id || null);
+  useBookingNotifications(userBusiness?.id || null, handleNewBooking);
   
   // Handle password recovery redirects
   usePasswordRecovery();
@@ -1037,6 +1044,13 @@ const Index = () => {
         open={showBusinessModal} 
         onOpenChange={setShowBusinessModal}
         onBusinessCreated={handleBusinessCreated}
+      />
+      <NewBookingAlert
+        booking={pendingBooking}
+        onClose={() => {
+          setPendingBooking(null);
+          fetchDashboardData();
+        }}
       />
     </div>
   );

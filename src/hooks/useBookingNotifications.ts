@@ -2,7 +2,20 @@ import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export const useBookingNotifications = (businessId: string | null) => {
+interface NewBookingPayload {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  appointment_date: string;
+  start_time: string;
+  end_time: string;
+  notes?: string | null;
+}
+
+export const useBookingNotifications = (
+  businessId: string | null,
+  onNewBooking?: (booking: NewBookingPayload) => void
+) => {
   const { toast } = useToast();
 
   useEffect(() => {
@@ -29,7 +42,10 @@ export const useBookingNotifications = (businessId: string | null) => {
           filter: `business_id=eq.${businessId}`
         },
         (payload) => {
-          const appointment = payload.new;
+          const appointment = payload.new as NewBookingPayload;
+
+          // Surface an in-app pop-up so the owner can confirm right away
+          onNewBooking?.(appointment);
           
           // Show toast notification
           toast({
@@ -39,11 +55,18 @@ export const useBookingNotifications = (businessId: string | null) => {
 
           // Show browser notification if permission granted
           if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('New Booking - Boji', {
-              body: `${appointment.customer_name} booked for ${appointment.appointment_date}`,
+            const notification = new Notification('New Booking - tap to confirm', {
+              body: `${appointment.customer_name} booked for ${appointment.appointment_date} at ${String(appointment.start_time).slice(0, 5)}`,
               icon: '/favicon.ico',
               badge: '/favicon.ico',
+              tag: `booking-${appointment.id}`,
+              requireInteraction: true,
             });
+            notification.onclick = () => {
+              window.focus();
+              notification.close();
+              onNewBooking?.(appointment);
+            };
           }
         }
       )
@@ -135,5 +158,5 @@ export const useBookingNotifications = (businessId: string | null) => {
       supabase.removeChannel(appointmentsChannel);
       supabase.removeChannel(modificationsChannel);
     };
-  }, [businessId, toast]);
+  }, [businessId, toast, onNewBooking]);
 };
