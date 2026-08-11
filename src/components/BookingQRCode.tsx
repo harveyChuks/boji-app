@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
+import { getBookingUrl } from "@/utils/publicUrl";
 
 interface BookingQRCodeProps {
   bookingLink: string;
@@ -14,14 +15,7 @@ const BookingQRCode = ({ bookingLink, businessName }: BookingQRCodeProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrGenerated, setQrGenerated] = useState(false);
   
-  // Always point the QR at the live public booking route (never a preview/localhost URL)
-  const origin =
-    typeof window !== "undefined" &&
-    !/localhost|127\.0\.0\.1|lovableproject\.com|lovable\.app/.test(window.location.hostname)
-      ? window.location.origin
-      : "https://bojiapp.me";
-
-  const fullUrl = `${origin}/book/${bookingLink}`;
+  const fullUrl = getBookingUrl(bookingLink);
 
   useEffect(() => {
     if (canvasRef.current) {
