@@ -38,6 +38,14 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
   
   // NOTE: Lovable doesn't support using VITE_* env vars in runtime code.
   const HCAPTCHA_SITE_KEY = "735c34e4-d862-4c18-8f7e-28f46a2aaea0";
+
+  const getAuthErrorMessage = (error: unknown, fallback: string) => {
+    if (error instanceof TypeError && error.message.toLowerCase().includes("fetch")) {
+      return "We couldn't reach the account service. Check your connection, disable any VPN or blocker, then try again.";
+    }
+
+    return error instanceof Error ? error.message : fallback;
+  };
   
   // Login state
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -84,7 +92,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
         onOpenChange(false);
         onAuthSuccess?.();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setCaptchaToken(null);
       captchaRef.current?.resetCaptcha();
       
@@ -97,7 +105,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       } else {
         toast({
           title: "Login Failed",
-          description: error.message || "Invalid email or password",
+          description: getAuthErrorMessage(error, "Invalid email or password"),
           variant: "destructive",
         });
       }
@@ -160,7 +168,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
           onOpenChange(false);
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setCaptchaToken(null);
       captchaRef.current?.resetCaptcha();
       
@@ -173,7 +181,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       } else {
         toast({
           title: "Signup Failed",
-          description: error.message || "Could not create account. Please try again.",
+          description: getAuthErrorMessage(error, "Could not create account. Please try again."),
           variant: "destructive",
         });
       }
@@ -219,12 +227,12 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       captchaRef.current?.resetCaptcha();
       setShowForgotPassword(false);
       setForgotPasswordEmail("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       setCaptchaToken(null);
       captchaRef.current?.resetCaptcha();
       toast({
         title: "Error",
-        description: error.message || "Failed to send password reset email",
+        description: getAuthErrorMessage(error, "Failed to send password reset email"),
         variant: "destructive",
       });
     } finally {
