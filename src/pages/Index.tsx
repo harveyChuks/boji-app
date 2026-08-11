@@ -1045,6 +1045,13 @@ const Index = () => {
         onOpenChange={setShowBusinessModal}
         onBusinessCreated={handleBusinessCreated}
       />
+      <NewBookingAlert
+        booking={pendingBooking}
+        onClose={() => {
+          setPendingBooking(null);
+          fetchDashboardData();
+        }}
+      />
     </div>
   );
 };
