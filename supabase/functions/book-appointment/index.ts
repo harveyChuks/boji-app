@@ -28,7 +28,12 @@ serve(async (req) => {
       userId = user?.id ?? null;
     }
 
-    const appointmentData = await req.json();
+    const payload = await req.json();
+    const {
+      notify = true,
+      all_services: allServices = null,
+      ...appointmentData
+    } = payload ?? {};
 
     // Validate required fields
     const requiredFields = ['business_id', 'service_id', 'appointment_date', 'start_time', 'end_time', 'customer_name', 'customer_phone'];
@@ -119,8 +124,16 @@ serve(async (req) => {
       ownerEmail = ownerData?.user?.email ?? null;
     }
 
-    // Send confirmation email to customer
-    if (appointment.customer_email && business && service) {
+    // Combined service label / total price when multiple services were booked
+    const combinedServiceName = Array.isArray(allServices) && allServices.length > 0
+      ? allServices.map((s: { name: string }) => s.name).join(', ')
+      : service?.name;
+    const combinedPrice = Array.isArray(allServices) && allServices.length > 0
+      ? allServices.reduce((sum: number, s: { price?: number }) => sum + Number(s.price ?? 0), 0)
+      : service?.price;
+
+    // Send confirmation email to customer (only once per booking)
+    if (notify && appointment.customer_email && business && service) {
       await supabaseClient.functions.invoke('send-booking-confirmation', {
         body: {
           appointmentId: appointment.id,
@@ -128,11 +141,11 @@ serve(async (req) => {
           customerName: appointment.customer_name,
           customerAddress: appointment.customer_address,
           businessName: business.name,
-          serviceName: service.name,
+          serviceName: combinedServiceName,
           appointmentDate: appointment.appointment_date,
           startTime: appointment.start_time,
           endTime: appointment.end_time,
-          price: service.price,
+          price: combinedPrice,
           currency: business.currency,
           businessPhone: business.phone,
           businessAddress: business.address,
@@ -142,7 +155,7 @@ serve(async (req) => {
     }
 
     // Send notification email to business owner
-    if (ownerEmail && service) {
+    if (notify && ownerEmail && service) {
       await supabaseClient.functions.invoke('send-owner-notification', {
         body: {
           appointmentId: appointment.id,
@@ -152,11 +165,11 @@ serve(async (req) => {
           customerEmail: appointment.customer_email,
           customerAddress: appointment.customer_address,
           businessName: business.name,
-          serviceName: service.name,
+          serviceName: combinedServiceName,
           appointmentDate: appointment.appointment_date,
           startTime: appointment.start_time,
           endTime: appointment.end_time,
-          price: service.price,
+          price: combinedPrice,
           currency: business.currency,
           notes: appointment.notes
         }
