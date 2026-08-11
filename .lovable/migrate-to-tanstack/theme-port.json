@@ -1,0 +1,17 @@
+{
+  "customizations": [
+    { "token": "--background/--foreground iOS light+dark palette (full shadcn set, HSL values preserved)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "--primary / --ring brand green 120 100% 40% (45% dark)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "--vivid-green (+ --color-vivid-green utility mapping)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "--radius 0.75rem iOS control radius", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "sidebar token set (light + dark)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".light class palette block", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "body iOS font stack, 17px base, safe-area padding, #root min-height, .dark body", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".scrollbar-hide", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "iOS typography scale (.text-large-title, .text-title-1/2, .text-headline, .text-body, .text-footnote, .text-caption)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".ios-material-thin / .ios-material-regular", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".ios-card / .ios-button / .ios-list-row", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "font-arista (Montserrat) via @theme --font-arista", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" },
+    { "token": "container: centered, 2rem padding, 1400px max via @utility container", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" }
+  ]
+}
