@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { Loader2, Gift } from "lucide-react";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 interface CustomerAuthModalProps {
   open: boolean;
@@ -20,7 +19,13 @@ const signupSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().trim().email("Invalid email address").max(255),
   phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20),
-  password: z.string().min(8, "Password must be at least 8 characters").max(100),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(100)
+    .regex(/[A-Z]/, "Password must include an uppercase letter")
+    .regex(/[a-z]/, "Password must include a lowercase letter")
+    .regex(/[0-9]/, "Password must include a number"),
 });
 
 const loginSchema = z.object({
@@ -33,11 +38,12 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
   const { toast } = useToast();
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
-  
-  // NOTE: Lovable doesn't support using VITE_* env vars in runtime code.
-  const HCAPTCHA_SITE_KEY = "735c34e4-d862-4c18-8f7e-28f46a2aaea0";
+  const passwordRules = [
+    { label: "At least 8 characters", test: (v: string) => v.length >= 8 },
+    { label: "One uppercase letter", test: (v: string) => /[A-Z]/.test(v) },
+    { label: "One lowercase letter", test: (v: string) => /[a-z]/.test(v) },
+    { label: "One number", test: (v: string) => /[0-9]/.test(v) },
+  ];
 
   const getAuthErrorMessage = (error: unknown, fallback: string) => {
     if (error instanceof TypeError && error.message.toLowerCase().includes("fetch")) {
@@ -59,14 +65,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
   });
 
   const handleLogin = async () => {
-    if (!captchaToken) {
-      toast({
-        title: "Captcha Required",
-        description: "Please complete the captcha verification",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setLoading(true);
     try {
@@ -75,9 +73,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       const { data, error } = await supabase.auth.signInWithPassword({
         email: validated.email,
         password: validated.password,
-        options: {
-          captchaToken,
-        },
       });
 
       if (error) throw error;
@@ -87,14 +82,10 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
           title: "Welcome back!",
           description: "You've been successfully logged in.",
         });
-        setCaptchaToken(null);
-        captchaRef.current?.resetCaptcha();
         onOpenChange(false);
         onAuthSuccess?.();
       }
     } catch (error: unknown) {
-      setCaptchaToken(null);
-      captchaRef.current?.resetCaptcha();
       
       if (error instanceof z.ZodError) {
         toast({
@@ -115,14 +106,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
   };
 
   const handleSignup = async () => {
-    if (!captchaToken) {
-      toast({
-        title: "Captcha Required",
-        description: "Please complete the captcha verification",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setLoading(true);
     try {
@@ -135,7 +118,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
         password: validated.password,
         options: {
           emailRedirectTo: redirectUrl,
-          captchaToken,
           data: {
             name: validated.name,
             phone: validated.phone,
@@ -147,8 +129,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       if (error) throw error;
 
       if (data.user) {
-        setCaptchaToken(null);
-        captchaRef.current?.resetCaptcha();
         
         // Check if email confirmation is required
         if (data.session) {
@@ -169,8 +149,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
         }
       }
     } catch (error: unknown) {
-      setCaptchaToken(null);
-      captchaRef.current?.resetCaptcha();
       
       if (error instanceof z.ZodError) {
         toast({
@@ -200,20 +178,11 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       return;
     }
 
-    if (!captchaToken) {
-      toast({
-        title: "Captcha Required",
-        description: "Please complete the captcha verification",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(forgotPasswordEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
-        captchaToken,
       });
 
       if (error) throw error;
@@ -223,13 +192,9 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
         description: "We've sent you a password reset link. Please check your email.",
       });
 
-      setCaptchaToken(null);
-      captchaRef.current?.resetCaptcha();
       setShowForgotPassword(false);
       setForgotPasswordEmail("");
     } catch (error: unknown) {
-      setCaptchaToken(null);
-      captchaRef.current?.resetCaptcha();
       toast({
         title: "Error",
         description: getAuthErrorMessage(error, "Failed to send password reset email"),
@@ -270,23 +235,12 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
               />
             </div>
 
-              <div className="flex justify-center">
-                <HCaptcha
-                  ref={captchaRef}
-                  sitekey={HCAPTCHA_SITE_KEY}
-                  onVerify={(token) => setCaptchaToken(token)}
-                  onExpire={() => setCaptchaToken(null)}
-                  onError={() => setCaptchaToken(null)}
-                />
-              </div>
 
             <div className="flex gap-2">
               <Button
                 onClick={() => {
                   setShowForgotPassword(false);
                   setForgotPasswordEmail("");
-                    setCaptchaToken(null);
-                    captchaRef.current?.resetCaptcha();
                 }}
                 variant="outline"
                 disabled={loading}
@@ -296,7 +250,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
               </Button>
               <Button
                 onClick={handleForgotPassword}
-                  disabled={loading || !captchaToken}
+                  disabled={loading}
                 className="flex-1"
               >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -333,8 +287,6 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
                     type="button"
                     onClick={() => {
                       setShowForgotPassword(true);
-                      setCaptchaToken(null);
-                      captchaRef.current?.resetCaptcha();
                     }}
                     className="text-xs text-primary hover:underline"
                   >
@@ -349,23 +301,14 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
                   onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                   disabled={loading}
                   className="bg-background border-border text-foreground"
-                  onKeyPress={(e) => e.key === 'Enter' && captchaToken && handleLogin()}
+                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
                 />
               </div>
 
-              <div className="flex justify-center">
-                <HCaptcha
-                  ref={captchaRef}
-                  sitekey={HCAPTCHA_SITE_KEY}
-                  onVerify={(token) => setCaptchaToken(token)}
-                  onExpire={() => setCaptchaToken(null)}
-                  onError={() => setCaptchaToken(null)}
-                />
-              </div>
 
               <Button
                 onClick={handleLogin}
-                disabled={loading || !captchaToken}
+                disabled={loading}
                 className="w-full"
               >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -436,22 +379,25 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
                   disabled={loading}
                   className="bg-background border-border text-foreground"
                 />
-                <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
+                <ul className="space-y-1 text-xs">
+                  {passwordRules.map((rule) => {
+                    const passed = rule.test(signupData.password);
+                    return (
+                      <li
+                        key={rule.label}
+                        className={passed ? "text-primary" : "text-muted-foreground"}
+                      >
+                        {passed ? "\u2713" : "\u2022"} {rule.label}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
 
-              <div className="flex justify-center">
-                <HCaptcha
-                  ref={captchaRef}
-                  sitekey={HCAPTCHA_SITE_KEY}
-                  onVerify={(token) => setCaptchaToken(token)}
-                  onExpire={() => setCaptchaToken(null)}
-                  onError={() => setCaptchaToken(null)}
-                />
-              </div>
 
               <Button
                 onClick={handleSignup}
-                disabled={loading || !captchaToken}
+                disabled={loading}
                 className="w-full"
               >
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
