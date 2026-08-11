@@ -32,6 +32,7 @@ import ReportsAnalytics from "@/components/ReportsAnalytics";
 import WhatsAppIntegration from "@/components/WhatsAppIntegration";
 import LocalPaymentsIntegration from "@/components/LocalPaymentsIntegration";
 import { useBookingNotifications } from "@/hooks/useBookingNotifications";
+import NewBookingAlert, { PendingBooking } from "@/components/NewBookingAlert";
 
 // Currency formatting function
 const formatCurrency = (amount: number, currency: string = 'NGN') => {
@@ -58,9 +59,15 @@ const Index = () => {
   
   // State for business
   const [userBusiness, setUserBusiness] = useState(null);
-  
+
+  // Pop-up alert for new bookings needing confirmation
+  const [pendingBooking, setPendingBooking] = useState<PendingBooking | null>(null);
+  const handleNewBooking = useCallback((booking: PendingBooking) => {
+    setPendingBooking(booking);
+  }, []);
+
   // Enable booking notifications for business owner
-  useBookingNotifications(userBusiness?.id || null);
+  useBookingNotifications(userBusiness?.id || null, handleNewBooking);
   
   // Handle password recovery redirects
   usePasswordRecovery();
