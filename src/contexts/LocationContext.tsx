@@ -26,6 +26,7 @@ interface LocationProviderProps {
 
 export const LocationProvider = ({ children }: LocationProviderProps) => {
   const [location, setLocationState] = useState<Location>(() => {
+    if (typeof window === "undefined") return 'NG';
     const savedLocation = localStorage.getItem('location') as Location;
     return savedLocation || 'NG';
   });
