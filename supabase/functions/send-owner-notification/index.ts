@@ -20,6 +20,7 @@ interface OwnerNotificationRequest {
   startTime: string;
   endTime: string;
   price: number;
+  currency?: string;
   notes?: string;
 }
 
@@ -41,6 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
       startTime,
       endTime,
       price,
+      currency,
       notes,
     }: OwnerNotificationRequest = await req.json();
 
@@ -62,6 +64,12 @@ const handler = async (req: Request): Promise<Response> => {
         day: 'numeric'
       });
     };
+
+    const currencySymbols: Record<string, string> = {
+      NGN: "₦", GHS: "₵", KES: "KSh", ZAR: "R", USD: "$", GBP: "£", CAD: "C$",
+    };
+    const formatPrice = (value: number) =>
+      `${currencySymbols[currency ?? ""] ?? `${currency ?? ""} `}${Number(value ?? 0).toFixed(2)}`;
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -119,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
                 </tr>
                 <tr>
                   <td style="padding: 10px 0;"><strong>Price:</strong></td>
-                  <td style="padding: 10px 0; text-align: right; color: #f5576c; font-size: 18px; font-weight: bold;">$${price}</td>
+                  <td style="padding: 10px 0; text-align: right; color: #f5576c; font-size: 18px; font-weight: bold;">${formatPrice(price)}</td>
                 </tr>
               </table>
               
