@@ -100,7 +100,7 @@ export const SecurityAudit = () => {
               ...incident, 
               status: status as any, 
               resolved_at: status === 'resolved' ? new Date().toISOString() : undefined 
-            }
+            } as any)
           : incident
       ));
       
