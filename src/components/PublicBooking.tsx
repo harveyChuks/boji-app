@@ -368,7 +368,10 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customer_name: formData.customer_name,
           customer_phone: formData.customer_phone,
           customer_email: formData.customer_email || undefined,
-          customer_address: formData.customer_address || undefined,
+          customer_address:
+            [formData.customer_address.trim(), formData.customer_postcode.trim()]
+              .filter(Boolean)
+              .join(', ') || undefined,
           notes: formData.notes || undefined,
           // Only the first booking triggers notification emails, and it carries
           // every selected service so a single email covers the whole booking.
