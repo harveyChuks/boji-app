@@ -29,6 +29,14 @@ const AuthModal = ({ open, onOpenChange, onAuthSuccess }: AuthModalProps) => {
   // NOTE: Lovable doesn't support using VITE_* env vars in runtime code.
   const HCAPTCHA_SITE_KEY = "735c34e4-d862-4c18-8f7e-28f46a2aaea0";
 
+  const getAuthErrorMessage = (error: unknown) => {
+    if (error instanceof TypeError && error.message.toLowerCase().includes("fetch")) {
+      return "We couldn't reach the account service. Check your connection, disable any VPN or blocker, then try again.";
+    }
+
+    return error instanceof Error ? error.message : "Something went wrong. Please try again.";
+  };
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -67,10 +75,10 @@ const AuthModal = ({ open, onOpenChange, onAuthSuccess }: AuthModalProps) => {
       
       onOpenChange(false);
       onAuthSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
-        description: error.message,
+        description: getAuthErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -121,10 +129,10 @@ const AuthModal = ({ open, onOpenChange, onAuthSuccess }: AuthModalProps) => {
       });
       
       onOpenChange(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Account creation failed",
+        description: getAuthErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -172,10 +180,10 @@ const AuthModal = ({ open, onOpenChange, onAuthSuccess }: AuthModalProps) => {
       
       setShowResetPassword(false);
       setFormData({ email: "", password: "", confirmPassword: "" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error sending reset email",
-        description: error.message || "Please try again later",
+        description: getAuthErrorMessage(error),
         variant: "destructive",
       });
     } finally {
