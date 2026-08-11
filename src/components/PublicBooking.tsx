@@ -1133,6 +1133,18 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="customer_postcode" className="text-foreground">Post Code (Optional)</Label>
+                  <Input
+                    id="customer_postcode"
+                    value={formData.customer_postcode}
+                    onChange={(e) => handleInputChange("customer_postcode", e.target.value.toUpperCase())}
+                    className="bg-background border-border text-foreground"
+                    placeholder="e.g. SW1A 1AA"
+                    maxLength={12}
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="notes" className="text-foreground">Special Requests (Optional)</Label>
                   <Textarea
                     id="notes"
