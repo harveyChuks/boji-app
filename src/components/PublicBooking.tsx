@@ -1108,10 +1108,6 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="notes" className="text-foreground">Special Requests (Optional)</Label>
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="customer_address" className="text-foreground">Address (Optional)</Label>
                   <Textarea
                     id="customer_address"
@@ -1125,6 +1121,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="notes" className="text-foreground">Special Requests (Optional)</Label>
                   <Textarea
                     id="notes"
                     value={formData.notes}
