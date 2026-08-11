@@ -14,6 +14,7 @@ interface OwnerNotificationRequest {
   customerName: string;
   customerPhone: string;
   customerEmail?: string;
+  customerAddress?: string;
   serviceName: string;
   appointmentDate: string;
   startTime: string;
@@ -34,6 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
       customerName,
       customerPhone,
       customerEmail,
+      customerAddress,
       serviceName,
       appointmentDate,
       startTime,
@@ -95,6 +97,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;"><strong>Email:</strong></td>
                   <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0; text-align: right;">${customerEmail}</td>
+                </tr>
+                ` : ''}
+                ${customerAddress ? `
+                <tr>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;"><strong>Address:</strong></td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0; text-align: right;">${customerAddress}</td>
                 </tr>
                 ` : ''}
                 <tr>
