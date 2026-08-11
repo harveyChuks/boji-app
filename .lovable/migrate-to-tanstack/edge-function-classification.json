@@ -1,0 +1,8 @@
+{"functions": [
+  {"name": "book-appointment", "classification": "unknown", "signal": "called from src/hooks/useSecureBooking.ts but chains supabase.functions.invoke into send-booking-confirmation and send-owner-notification and depends on RESEND_API_KEY/service-role secrets in Supabase env; booking+email flow verified working this session", "outcome": "left"},
+  {"name": "check-availability", "classification": "unknown", "signal": "part of the same booking flow; uses Supabase-managed secrets/SECURITY DEFINER RPC path", "outcome": "left"},
+  {"name": "handle-booking-action", "classification": "custom response", "signal": "confirm/decline booking actions; called from src via hardcoded /functions/v1 URL; leaving URL stable", "outcome": "left"},
+  {"name": "send-booking-confirmation", "classification": "unknown", "signal": "invoked by book-appointment edge function (server-to-server) — must stay while book-appointment stays", "outcome": "left"},
+  {"name": "send-monthly-report", "classification": "cron target", "signal": "zero internal call sites; monthly automated report likely scheduled from Supabase dashboard (Database → Cron) — no repo trace can prove no schedule exists", "outcome": "left"},
+  {"name": "send-owner-notification", "classification": "unknown", "signal": "invoked by book-appointment edge function and from src; part of email chain on Resend secrets", "outcome": "left"}
+]}
