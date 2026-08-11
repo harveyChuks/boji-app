@@ -862,7 +862,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center space-x-3">
-                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                        <div className={`w-5 h-5 rounded-xs border-2 flex items-center justify-center ${
                           formData.selected_services.includes(service.id)
                             ? 'border-primary bg-primary'
                             : 'border-slate-400'
@@ -1220,7 +1220,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
 
       {/* Message Dialog */}
       {showMessageDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
           <Card className="w-full max-w-md bg-slate-800 border-slate-700">
             <CardHeader className="relative">
               <button

@@ -134,8 +134,8 @@ const VisitAnalytics = ({ businessId }: { businessId?: string }) => {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 bg-muted animate-pulse rounded" />
-        <div className="h-64 bg-muted animate-pulse rounded" />
+        <div className="h-8 bg-muted animate-pulse rounded-xs" />
+        <div className="h-64 bg-muted animate-pulse rounded-xs" />
       </div>
     );
   }
@@ -277,7 +277,7 @@ const VisitAnalytics = ({ businessId }: { businessId?: string }) => {
             <div className="space-y-2">
               {stats.top_countries.length > 0 ? (
                 stats.top_countries.map((country, index) => (
-                  <div key={country.country} className="flex items-center justify-between p-2 rounded border">
+                  <div key={country.country} className="flex items-center justify-between p-2 rounded-xs border">
                     <div className="flex items-center space-x-2">
                       <Globe className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{country.country}</span>
@@ -301,7 +301,7 @@ const VisitAnalytics = ({ businessId }: { businessId?: string }) => {
             <div className="space-y-2">
               {stats.top_cities.length > 0 ? (
                 stats.top_cities.map((city, index) => (
-                  <div key={city.city} className="flex items-center justify-between p-2 rounded border">
+                  <div key={city.city} className="flex items-center justify-between p-2 rounded-xs border">
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{city.city}</span>
@@ -325,7 +325,7 @@ const VisitAnalytics = ({ businessId }: { businessId?: string }) => {
         <CardContent>
           <div className="space-y-2">
             {stats.top_pages.map((page, index) => (
-              <div key={page.page_path} className="flex items-center justify-between p-2 rounded border">
+              <div key={page.page_path} className="flex items-center justify-between p-2 rounded-xs border">
                 <div className="flex items-center space-x-2">
                   <Badge variant="outline">{index + 1}</Badge>
                   <span className="font-medium">{page.page_path}</span>

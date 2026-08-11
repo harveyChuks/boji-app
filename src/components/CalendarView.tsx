@@ -209,15 +209,15 @@ const CalendarView = () => {
             />
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-emerald-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-emerald-500"></div>
                 <span className="text-muted-foreground">Confirmed</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-amber-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-amber-500"></div>
                 <span className="text-muted-foreground">Pending</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-blue-500"></div>
                 <span className="text-muted-foreground">Completed</span>
               </div>
             </div>

@@ -186,11 +186,11 @@ const TimeSlotPicker = ({
       {/* Legend */}
       <div className="flex flex-wrap gap-4 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-500/20 border border-green-500/30"></div>
+          <div className="w-4 h-4 rounded-xs bg-green-500/20 border border-green-500/30"></div>
           <span className="text-slate-300">Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-amber-500 border border-amber-600"></div>
+          <div className="w-4 h-4 rounded-xs bg-amber-500 border border-amber-600"></div>
           <span className="text-slate-300">Selected</span>
         </div>
       </div>

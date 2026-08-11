@@ -401,7 +401,7 @@ const AdminDashboard = () => {
                       )
                         .sort(([, a], [, b]) => (b as number) - (a as number))
                         .map(([country, count]) => (
-                          <div key={country} className="flex items-center justify-between p-3 rounded border">
+                          <div key={country} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{country}</span>
                             <Badge>{count as number} businesses</Badge>
                           </div>
@@ -428,7 +428,7 @@ const AdminDashboard = () => {
                         .sort(([, a], [, b]) => (b as { state: string; country: string; count: number }).count - (a as { state: string; country: string; count: number }).count)
                         .slice(0, 20)
                         .map(([key, data]) => (
-                          <div key={key} className="flex items-center justify-between p-3 rounded border">
+                          <div key={key} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{key}</span>
                             <Badge>{(data as { state: string; country: string; count: number }).count} businesses</Badge>
                           </div>
@@ -455,7 +455,7 @@ const AdminDashboard = () => {
                         .sort(([, a], [, b]) => (b as { city: string; state: string; count: number }).count - (a as { city: string; state: string; count: number }).count)
                         .slice(0, 20)
                         .map(([key, data]) => (
-                          <div key={key} className="flex items-center justify-between p-3 rounded border">
+                          <div key={key} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{key}</span>
                             <Badge>{(data as { city: string; state: string; count: number }).count} businesses</Badge>
                           </div>

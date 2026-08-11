@@ -298,7 +298,7 @@ const BusinessHoursManagement = () => {
                     <select
                       value={dayHours.start_time}
                       onChange={(e) => updateBusinessHours(dayHours.day_of_week, 'start_time', e.target.value)}
-                      className="bg-input border border-border text-foreground px-3 py-1 rounded text-sm"
+                      className="bg-input border border-border text-foreground px-3 py-1 rounded-xs text-sm"
                     >
                       {timeSlots.map(slot => (
                         <option key={slot.value} value={slot.value}>
@@ -313,7 +313,7 @@ const BusinessHoursManagement = () => {
                     <select
                       value={dayHours.end_time}
                       onChange={(e) => updateBusinessHours(dayHours.day_of_week, 'end_time', e.target.value)}
-                      className="bg-input border border-border text-foreground px-3 py-1 rounded text-sm"
+                      className="bg-input border border-border text-foreground px-3 py-1 rounded-xs text-sm"
                     >
                       {timeSlots.map(slot => (
                         <option key={slot.value} value={slot.value}>

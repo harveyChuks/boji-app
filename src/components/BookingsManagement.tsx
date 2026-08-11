@@ -215,12 +215,12 @@ const BookingsManagement = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 bg-muted rounded animate-pulse"></div>
+        <div className="h-8 bg-muted rounded-xs animate-pulse"></div>
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
             <Card key={i} className="bg-card border-border animate-pulse">
               <CardContent className="p-6">
-                <div className="h-20 bg-muted rounded"></div>
+                <div className="h-20 bg-muted rounded-xs"></div>
               </CardContent>
             </Card>
           ))}

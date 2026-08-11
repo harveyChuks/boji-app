@@ -213,7 +213,7 @@ const StatisticsOverview = () => {
         {[...Array(6)].map((_, i) => (
           <Card key={i} className="bg-card border-border animate-pulse">
             <CardContent className="p-6">
-              <div className="h-16 bg-muted rounded"></div>
+              <div className="h-16 bg-muted rounded-xs"></div>
             </CardContent>
           </Card>
         ))}

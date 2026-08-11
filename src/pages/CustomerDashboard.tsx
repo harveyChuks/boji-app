@@ -294,7 +294,7 @@ const CustomerDashboard = () => {
 
                     {/* Discount Info */}
                     {appointment.discount_percentage > 0 && (
-                      <div className="mt-3 p-2 bg-primary/5 border border-primary/20 rounded text-sm">
+                      <div className="mt-3 p-2 bg-primary/5 border border-primary/20 rounded-xs text-sm">
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground">
                             <Gift className="w-3 h-3 inline mr-1" />
