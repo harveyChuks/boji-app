@@ -132,6 +132,19 @@ serve(async (req) => {
       ? allServices.reduce((sum: number, s: { price?: number }) => sum + Number(s.price ?? 0), 0)
       : service?.price;
 
+    // When several services are booked back-to-back, the email should show the
+    // full block, not just the first service's slot.
+    let combinedEndTime: string = appointment.end_time;
+    if (Array.isArray(allServices) && allServices.length > 0) {
+      const totalMinutes = allServices.reduce(
+        (sum: number, s: { duration_minutes?: number }) => sum + Number(s.duration_minutes ?? 0),
+        0
+      );
+      const [h = '0', m = '0'] = String(appointment.start_time).split(':');
+      const end = new Date(2000, 0, 1, Number(h), Number(m) + totalMinutes);
+      combinedEndTime = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}:00`;
+    }
+
     // Send confirmation email to customer (only once per booking)
     if (notify && appointment.customer_email && business && service) {
       await supabaseClient.functions.invoke('send-booking-confirmation', {
@@ -144,7 +157,7 @@ serve(async (req) => {
           serviceName: combinedServiceName,
           appointmentDate: appointment.appointment_date,
           startTime: appointment.start_time,
-          endTime: appointment.end_time,
+          endTime: combinedEndTime,
           price: combinedPrice,
           currency: business.currency,
           businessPhone: business.phone,
@@ -168,7 +181,7 @@ serve(async (req) => {
           serviceName: combinedServiceName,
           appointmentDate: appointment.appointment_date,
           startTime: appointment.start_time,
-          endTime: appointment.end_time,
+          endTime: combinedEndTime,
           price: combinedPrice,
           currency: business.currency,
           notes: appointment.notes
