@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImage } from "@/utils/imageUpload";
 import QRCode from "qrcode";
+import { getBookingUrl } from "@/utils/publicUrl";
 import { BUSINESS_TYPES, BusinessType } from "@/utils/businessTypes";
 
 const ProfileManagement = () => {
@@ -54,7 +55,7 @@ const ProfileManagement = () => {
   const generateQRCode = async () => {
     if (!business?.booking_link) return;
     
-    const bookingUrl = `${window.location.origin}/book/${business.booking_link}`;
+    const bookingUrl = getBookingUrl(business.booking_link);
     
     try {
       const qrDataUrl = await QRCode.toDataURL(bookingUrl, {
@@ -246,7 +247,7 @@ const ProfileManagement = () => {
   const copyBookingLink = async () => {
     if (!business?.booking_link) return;
     
-    const bookingUrl = `${window.location.origin}/book/${business.booking_link}`;
+    const bookingUrl = getBookingUrl(business.booking_link);
     try {
       await navigator.clipboard.writeText(bookingUrl);
       setCopiedLink(true);
@@ -266,7 +267,7 @@ const ProfileManagement = () => {
 
   const openBookingPage = () => {
     if (!business?.booking_link) return;
-    const bookingUrl = `${window.location.origin}/book/${business.booking_link}`;
+    const bookingUrl = getBookingUrl(business.booking_link);
     window.open(bookingUrl, '_blank');
   };
 
@@ -331,7 +332,7 @@ const ProfileManagement = () => {
     );
   }
 
-  const bookingUrl = business.booking_link ? `${window.location.origin}/book/${business.booking_link}` : '';
+  const bookingUrl = business.booking_link ? getBookingUrl(business.booking_link) : '';
 
   return (
     <div className="space-y-6">
