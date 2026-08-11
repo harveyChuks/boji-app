@@ -68,7 +68,7 @@ const AppointmentModal = ({ open, onOpenChange, onAppointmentCreated }: Appointm
       const { data: business } = await supabase
         .from('businesses')
         .select('*')
-        .eq('owner_id', user?.id)
+        .eq('owner_id', user?.id ?? '')
         .maybeSingle();
       
       setUserBusiness(business);
@@ -105,8 +105,8 @@ const AppointmentModal = ({ open, onOpenChange, onAppointmentCreated }: Appointm
 
   const convertTimeToPostgresFormat = (timeString: string) => {
     // Convert "2:00 PM" to "14:00:00"
-    const [time, period] = timeString.split(' ');
-    let [hours, minutes] = time.split(':');
+    const [time = '', period = ''] = timeString.split(' ');
+    let [hours = '0', minutes = '00'] = time.split(':');
     
     if (period === 'PM' && hours !== '12') {
       hours = String(parseInt(hours) + 12);
@@ -118,7 +118,7 @@ const AppointmentModal = ({ open, onOpenChange, onAppointmentCreated }: Appointm
   };
 
   const calculateEndTime = (startTime: string, durationMinutes: number) => {
-    const [hours, minutes] = startTime.split(':').map(Number);
+    const [hours = 0, minutes = 0] = startTime.split(':').map(Number);
     const totalMinutes = hours * 60 + minutes + durationMinutes;
     const endHours = Math.floor(totalMinutes / 60);
     const endMinutes = totalMinutes % 60;

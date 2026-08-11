@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,8 +81,8 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
   const [portfolioScrollPosition, setPortfolioScrollPosition] = useState(0);
   const [lastAppointmentData, setLastAppointmentData] = useState<{
     customerName: string;
-    customerEmail?: string;
-    appointmentId?: string;
+    customerEmail?: string | undefined;
+    appointmentId?: string | undefined;
   } | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState("");
@@ -166,9 +166,9 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
         throw new Error('Business not found');
       }
       
-      const business = businessData[0];
+      const business = businessData[0]!;
       setBusiness({
-        ...business,
+        ...(business as any),
         currency: (business as any).currency || 'USD', // Default to USD if not set
         banner_url: (business as any).banner_url || null
       });
@@ -205,7 +205,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       if (workPicturesError) {
         console.error('Error fetching work pictures:', workPicturesError);
       } else {
-        setWorkPictures(workPicturesData || []);
+        setWorkPictures((workPicturesData || []) as any);
       }
 
       // Get reviews
@@ -333,8 +333,8 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       
       // Convert selectedTime (12-hour format) to 24-hour format
       const convertTo24Hour = (time12h: string): string => {
-        const [time, period] = time12h.split(' ');
-        const [hours, minutes] = time.split(':');
+        const [time = '', period = ''] = time12h.split(' ');
+        const [hours = '0', minutes = '00'] = time.split(':');
         let hour24 = parseInt(hours);
         
         if (period.toLowerCase() === 'pm' && hour24 !== 12) {
@@ -371,7 +371,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           notes: formData.notes || undefined
         };
 
-        return createBooking(bookingData);
+        return createBooking(bookingData as any);
       });
 
       const results = await Promise.all(appointmentPromises);
@@ -486,7 +486,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
           customerPhone: messageData.phone || 'Not provided',
           customerEmail: messageData.email || 'Not provided',
           serviceName: 'Customer Message',
-          appointmentDate: new Date().toISOString().split('T')[0],
+          appointmentDate: new Date().toISOString().slice(0, 10),
           startTime: '',
           endTime: '',
           price: 0,
@@ -862,7 +862,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center space-x-3">
-                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                        <div className={`w-5 h-5 rounded-xs border-2 flex items-center justify-center ${
                           formData.selected_services.includes(service.id)
                             ? 'border-primary bg-primary'
                             : 'border-slate-400'
@@ -1220,7 +1220,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
 
       {/* Message Dialog */}
       {showMessageDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
           <Card className="w-full max-w-md bg-slate-800 border-slate-700">
             <CardHeader className="relative">
               <button

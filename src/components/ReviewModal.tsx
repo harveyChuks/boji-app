@@ -11,8 +11,8 @@ interface ReviewModalProps {
   onOpenChange: (open: boolean) => void;
   businessId: string;
   customerName: string;
-  customerEmail?: string;
-  appointmentId?: string;
+  customerEmail?: string | undefined;
+  appointmentId?: string | undefined;
 }
 
 export const ReviewModal = ({ 
@@ -93,7 +93,7 @@ export const ReviewModal = ({
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
-                  className="transition-transform hover:scale-110 focus:outline-none"
+                  className="transition-transform hover:scale-110 focus:outline-hidden"
                 >
                   <Star
                     className={`w-10 h-10 ${

@@ -1,103 +1,32 @@
-// Service Worker for offline capabilities
-const CACHE_NAME = 'boji-v2';
-const urlsToCache = [
-  '/',
-  '/manifest.json'
-];
+// Replaces the old Workbox SW so returning users stop receiving cached SPA assets.
+// Cache Storage is origin-scoped; only delete Workbox caches for this scope.
 
-// Install event
-self.addEventListener('install', (event) => {
+function isWorkboxCacheForThisRegistration(name) {
+  const hasWorkboxBucket = /(^|-)precache-v\d+-|(^|-)runtime-|(^|-)googleAnalytics-/.test(name);
+  return hasWorkboxBucket && name.endsWith(self.registration.scope);
+}
+
+self.addEventListener("install", () => {
   self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
+    (async () => {
+      // activate fires once: any reject above unregister() would strand the SW
+      // registered forever, so unregister() lives in finally.
+      try {
+        const cacheNames = await caches.keys();
+        const workboxCacheNames = cacheNames.filter(isWorkboxCacheForThisRegistration);
+        await Promise.allSettled(workboxCacheNames.map((name) => caches.delete(name)));
+        await self.clients.claim();
+        const windowClients = await self.clients.matchAll({ type: "window" });
+        await Promise.allSettled(
+          windowClients.map((client) => client.navigate(client.url)),
+        );
+      } finally {
+        await self.registration.unregister();
+      }
+    })(),
   );
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => Promise.all(
-        cacheNames
-          .filter((cacheName) => cacheName !== CACHE_NAME)
-          .map((cacheName) => caches.delete(cacheName))
-      ))
-      .then(() => self.clients.claim())
-  );
-});
-
-// Fetch event
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-
-  // IMPORTANT:
-  // - Never try to handle non-GET requests (e.g. Supabase Auth POST /token, /recover).
-  //   The Cache API only supports GET; attempting to cache-match POST can break requests.
-  // - Never try to cache cross-origin requests.
-  const url = new URL(request.url);
-  const isSameOrigin = url.origin === self.location.origin;
-
-  if (request.method !== 'GET' || !isSameOrigin) {
-    return;
-  }
-
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put('/', copy));
-          return response;
-        })
-        .catch(() => caches.match('/'))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(request);
-    })
-  );
-});
-
-// Background sync
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(syncData());
-  }
-});
-
-// Sync data when back online
-async function syncData() {
-  // Get offline data from IndexedDB or localStorage
-  const offlineData = await getOfflineData();
-  
-  // Sync with server
-  for (const item of offlineData) {
-    try {
-      await syncItem(item);
-    } catch (error) {
-      console.error('Sync failed for item:', item, error);
-    }
-  }
-}
-
-async function getOfflineData() {
-  // Implementation to get offline data
-  return [];
-}
-
-async function syncItem(item) {
-  // Implementation to sync individual item
-  return fetch('/api/sync', {
-    method: 'POST',
-    body: JSON.stringify(item),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-}

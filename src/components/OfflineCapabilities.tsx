@@ -75,37 +75,12 @@ const OfflineCapabilities = () => {
         }
       }
 
-      // Initialize service worker and cache
-      if ('serviceWorker' in navigator && settings.enabled) {
-        await initializeServiceWorker();
-      }
-
       // Get initial sync status
       await updateSyncStatus();
     } catch (error) {
       console.error("Error initializing offline capabilities:", error);
     } finally {
       setSyncStatus(prev => ({ ...prev, isInitializing: false }));
-    }
-  };
-
-  const initializeServiceWorker = async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker registered:', registration);
-      
-      // Listen for messages from service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data.type === 'SYNC_STATUS') {
-          setSyncStatus(prev => ({
-            ...prev,
-            pendingUploads: event.data.pendingUploads,
-            cacheSize: event.data.cacheSize,
-          }));
-        }
-      });
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
     }
   };
 
@@ -266,10 +241,6 @@ const OfflineCapabilities = () => {
         description: "Offline capabilities settings updated successfully",
       });
 
-      // Reinitialize if enabled
-      if (settings.enabled && 'serviceWorker' in navigator) {
-        await initializeServiceWorker();
-      }
     } catch (error) {
       console.error("Error saving settings:", error);
       toast({

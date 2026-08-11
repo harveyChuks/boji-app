@@ -90,7 +90,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       if (error instanceof z.ZodError) {
         toast({
           title: "Validation Error",
-          description: error.errors[0].message,
+          description: error.errors[0]?.message ?? 'Invalid input',
           variant: "destructive",
         });
       } else {
@@ -153,7 +153,7 @@ export const CustomerAuthModal = ({ open, onOpenChange, onAuthSuccess }: Custome
       if (error instanceof z.ZodError) {
         toast({
           title: "Validation Error",
-          description: error.errors[0].message,
+          description: error.errors[0]?.message ?? 'Invalid input',
           variant: "destructive",
         });
       } else {

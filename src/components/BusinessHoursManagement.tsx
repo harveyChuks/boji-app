@@ -66,7 +66,7 @@ const BusinessHoursManagement = () => {
       const { data: hoursData, error: hoursError } = await supabase
         .from('business_hours')
         .select('*')
-        .eq('business_id', businessData.id)
+        .eq('business_id', businessData!.id)
         .order('day_of_week');
 
       if (hoursError && hoursError.code !== 'PGRST116') {
@@ -80,10 +80,10 @@ const BusinessHoursManagement = () => {
           start_time: hour.start_time.substring(0, 5), // '09:00:00' -> '09:00'
           end_time: hour.end_time.substring(0, 5)
         }));
-        setBusinessHours(normalizedHours);
+        setBusinessHours(normalizedHours as any);
       } else {
         // Initialize default hours
-        await initializeDefaultHours(businessData.id);
+        await initializeDefaultHours(businessData!.id);
       }
     } catch (error: any) {
       console.error('Error fetching business hours:', error);
@@ -128,7 +128,7 @@ const BusinessHoursManagement = () => {
           start_time: hour.start_time.substring(0, 5),
           end_time: hour.end_time.substring(0, 5)
         }));
-        setBusinessHours(normalizedHours);
+        setBusinessHours(normalizedHours as any);
       }
     } catch (error: any) {
       console.error('Error initializing default hours:', error);
@@ -217,7 +217,7 @@ const BusinessHoursManagement = () => {
           start_time: hour.start_time.substring(0, 5),
           end_time: hour.end_time.substring(0, 5)
         }));
-        setBusinessHours(normalizedHours);
+        setBusinessHours(normalizedHours as any);
       } else {
         console.error('No data returned from upsert - this should not happen');
       }
@@ -298,7 +298,7 @@ const BusinessHoursManagement = () => {
                     <select
                       value={dayHours.start_time}
                       onChange={(e) => updateBusinessHours(dayHours.day_of_week, 'start_time', e.target.value)}
-                      className="bg-input border border-border text-foreground px-3 py-1 rounded text-sm"
+                      className="bg-input border border-border text-foreground px-3 py-1 rounded-xs text-sm"
                     >
                       {timeSlots.map(slot => (
                         <option key={slot.value} value={slot.value}>
@@ -313,7 +313,7 @@ const BusinessHoursManagement = () => {
                     <select
                       value={dayHours.end_time}
                       onChange={(e) => updateBusinessHours(dayHours.day_of_week, 'end_time', e.target.value)}
-                      className="bg-input border border-border text-foreground px-3 py-1 rounded text-sm"
+                      className="bg-input border border-border text-foreground px-3 py-1 rounded-xs text-sm"
                     >
                       {timeSlots.map(slot => (
                         <option key={slot.value} value={slot.value}>

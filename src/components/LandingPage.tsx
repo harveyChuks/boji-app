@@ -37,7 +37,7 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
     
     const interval = setInterval(() => {
       index = (index + 1) % benefits.length;
-      setAnimatedText(benefits[index]);
+      setAnimatedText(benefits[index] ?? '');
     }, 2000);
     
     return () => clearInterval(interval);
@@ -800,7 +800,7 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
       <section className="py-16 sm:py-20 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-accent/5 to-green-500/10"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <Card className="bg-gradient-to-br from-card to-accent/20 border-border backdrop-blur-sm shadow-2xl">
+          <Card className="bg-gradient-to-br from-card to-accent/20 border-border backdrop-blur-xs shadow-2xl">
             <CardContent className="p-8 sm:p-12">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-card-foreground mb-4">
                 Ready to Transform Your Business?

@@ -112,7 +112,7 @@ export const FinancialDashboard = () => {
         business_name: payment.appointments?.businesses?.name || 'Unknown'
       })) || [];
 
-      setPayments(formattedPayments);
+      setPayments(formattedPayments as any);
 
     } catch (error) {
       console.error('Error fetching financial data:', error);

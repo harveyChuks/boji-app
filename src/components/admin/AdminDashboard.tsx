@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, Users, DollarSign, TrendingUp, Search, Ban, CheckCircle, ArrowLeft, Home, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router-compat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BUSINESS_TYPES } from "@/utils/businessTypes";
 import VisitAnalytics from "@/components/analytics/VisitAnalytics";
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
       if (businessError) throw businessError;
 
-      setBusinesses(businessData || []);
+      setBusinesses((businessData || []) as any);
 
       // Fetch subscription statistics
       const { data: subscriptionData, error: subError } = await supabase
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
       if (subError) throw subError;
 
-      setSubscriptions(subscriptionData || []);
+      setSubscriptions((subscriptionData || []) as any);
 
       // Calculate statistics
       const activeCount = subscriptionData?.filter(s => s.status === 'active').length || 0;
@@ -401,7 +401,7 @@ const AdminDashboard = () => {
                       )
                         .sort(([, a], [, b]) => (b as number) - (a as number))
                         .map(([country, count]) => (
-                          <div key={country} className="flex items-center justify-between p-3 rounded border">
+                          <div key={country} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{country}</span>
                             <Badge>{count as number} businesses</Badge>
                           </div>
@@ -428,7 +428,7 @@ const AdminDashboard = () => {
                         .sort(([, a], [, b]) => (b as { state: string; country: string; count: number }).count - (a as { state: string; country: string; count: number }).count)
                         .slice(0, 20)
                         .map(([key, data]) => (
-                          <div key={key} className="flex items-center justify-between p-3 rounded border">
+                          <div key={key} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{key}</span>
                             <Badge>{(data as { state: string; country: string; count: number }).count} businesses</Badge>
                           </div>
@@ -455,7 +455,7 @@ const AdminDashboard = () => {
                         .sort(([, a], [, b]) => (b as { city: string; state: string; count: number }).count - (a as { city: string; state: string; count: number }).count)
                         .slice(0, 20)
                         .map(([key, data]) => (
-                          <div key={key} className="flex items-center justify-between p-3 rounded border">
+                          <div key={key} className="flex items-center justify-between p-3 rounded-xs border">
                             <span className="font-medium">{key}</span>
                             <Badge>{(data as { city: string; state: string; count: number }).count} businesses</Badge>
                           </div>

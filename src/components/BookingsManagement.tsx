@@ -85,7 +85,7 @@ const BookingsManagement = () => {
 
       if (error) throw error;
 
-      setAppointments(appointmentsData || []);
+      setAppointments((appointmentsData || []) as any);
     } catch (error) {
       console.error('Error fetching appointments:', error);
     } finally {
@@ -196,7 +196,7 @@ const BookingsManagement = () => {
   };
 
   const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(':');
+    const [hours = '0', minutes = '00'] = timeString.split(':');
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
@@ -215,12 +215,12 @@ const BookingsManagement = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 bg-muted rounded animate-pulse"></div>
+        <div className="h-8 bg-muted rounded-xs animate-pulse"></div>
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
             <Card key={i} className="bg-card border-border animate-pulse">
               <CardContent className="p-6">
-                <div className="h-20 bg-muted rounded"></div>
+                <div className="h-20 bg-muted rounded-xs"></div>
               </CardContent>
             </Card>
           ))}

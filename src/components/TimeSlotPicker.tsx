@@ -9,7 +9,7 @@ interface TimeSlotPickerProps {
   businessId: string;
   date: string;
   durationMinutes: number;
-  staffId?: string;
+  staffId?: string | undefined;
   selectedTime: string;
   onTimeSelect: (time: string) => void;
 }
@@ -102,11 +102,11 @@ const TimeSlotPicker = ({
     if (!s || !s.is_available) return false;
     
     // If selected date is today, filter out past time slots
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().slice(0, 10);
     if (date === today) {
       const now = new Date();
       const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes
-      const [slotHours, slotMinutes] = s.slot_time.split(':').map(Number);
+      const [slotHours = 0, slotMinutes = 0] = s.slot_time.split(':').map(Number);
       const slotTimeInMinutes = slotHours * 60 + slotMinutes;
       
       // Filter out slots that are in the past
@@ -120,7 +120,7 @@ const TimeSlotPicker = ({
   
   // Group slots by time of day
   const getTimeOfDay = (timeString: string) => {
-    const hour = parseInt(timeString.split(':')[0]);
+    const hour = parseInt(timeString.split(':')[0] ?? '0');
     if (hour < 12) return 'morning';
     if (hour < 17) return 'afternoon';
     return 'evening';
@@ -186,11 +186,11 @@ const TimeSlotPicker = ({
       {/* Legend */}
       <div className="flex flex-wrap gap-4 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-500/20 border border-green-500/30"></div>
+          <div className="w-4 h-4 rounded-xs bg-green-500/20 border border-green-500/30"></div>
           <span className="text-slate-300">Available</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-amber-500 border border-amber-600"></div>
+          <div className="w-4 h-4 rounded-xs bg-amber-500 border border-amber-600"></div>
           <span className="text-slate-300">Selected</span>
         </div>
       </div>

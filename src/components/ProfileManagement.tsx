@@ -21,7 +21,7 @@ const ProfileManagement = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<any>(null);
   const [copiedLink, setCopiedLink] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -106,7 +106,7 @@ const ProfileManagement = () => {
 
       if (data) {
         console.log('Business data fetched:', data);
-        setBusiness(data);
+        setBusiness(data as any);
         setFormData({
           name: data.name || "",
           description: data.description || "",

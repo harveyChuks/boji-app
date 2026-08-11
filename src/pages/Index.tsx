@@ -18,7 +18,7 @@ import { useTimeBasedTheme } from "@/hooks/useTimeBasedTheme";
 import { usePasswordRecovery } from "@/hooks/usePasswordRecovery";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "@/lib/router-compat";
 import StatisticsOverview from "@/components/StatisticsOverview";
 import ProfileManagement from "@/components/ProfileManagement";
 import ServicesManagement from "@/components/ServicesManagement";
@@ -58,7 +58,7 @@ const Index = () => {
   const themeInfo = useTimeBasedTheme(!isAuthenticated);
   
   // State for business
-  const [userBusiness, setUserBusiness] = useState(null);
+  const [userBusiness, setUserBusiness] = useState<any>(null);
 
   // Pop-up alert for new bookings needing confirmation
   const [pendingBooking, setPendingBooking] = useState<PendingBooking | null>(null);
@@ -88,8 +88,8 @@ const Index = () => {
   }, [isNativeMobile, authLoading, isAuthenticated]);
   const [activeSection, setActiveSection] = useState<string>('home');
   const [searchTerm, setSearchTerm] = useState("");
-  const [todayAppointments, setTodayAppointments] = useState([]);
-  const [recentClients, setRecentClients] = useState([]);
+  const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
+  const [recentClients, setRecentClients] = useState<any[]>([]);
   const [stats, setStats] = useState({
     todayAppointments: 0,
     totalClients: 0,
@@ -114,7 +114,7 @@ const Index = () => {
         throw error;
       }
 
-      setUserBusiness(data);
+      setUserBusiness(data as any);
       
       // Debug log to check currency
       console.log('Business currency:', data?.currency);
@@ -130,7 +130,7 @@ const Index = () => {
 
     setLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().slice(0, 10);
       
       // Fetch today's appointments with service details
       const { data: appointments } = await supabase
@@ -145,7 +145,7 @@ const Index = () => {
         .eq('business_id', userBusiness.id)
         .eq('appointment_date', today);
 
-      setTodayAppointments(appointments || []);
+      setTodayAppointments((appointments || []) as any);
 
       // Fetch recent clients from customers who have appointments with this business
       const { data: clients } = await supabase
@@ -160,7 +160,7 @@ const Index = () => {
         .order('created_at', { ascending: false })
         .limit(4);
 
-      setRecentClients(clients || []);
+      setRecentClients((clients || []) as any);
 
       // Calculate total clients for this business
       const { count: totalClientsCount } = await supabase
@@ -177,7 +177,7 @@ const Index = () => {
       const uniqueCustomerCount = new Set(uniqueCustomers?.map(a => a.customer_id)).size;
 
       // Calculate weekly appointments (last 7 days)
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const { count: weeklyCount } = await supabase
         .from('appointments')
         .select('*', { count: 'exact', head: true })
@@ -204,7 +204,7 @@ const Index = () => {
       // Calculate this month's revenue
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
-      const startOfMonthStr = startOfMonth.toISOString().split('T')[0];
+      const startOfMonthStr = startOfMonth.toISOString().slice(0, 10);
       
       const { data: monthlyCompletedAppointments } = await supabase
         .from('appointments')
@@ -272,6 +272,7 @@ const Index = () => {
         supabase.removeChannel(channel);
       };
     }
+    return undefined;
   }, [userBusiness]);
 
   const filteredClients = recentClients.filter(client =>

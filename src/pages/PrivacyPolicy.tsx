@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 
 const PrivacyPolicy = () => {
   return (

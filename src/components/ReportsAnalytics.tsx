@@ -197,7 +197,7 @@ const ReportsAnalytics = () => {
         }))
         .sort((a, b) => b.revenue - a.revenue);
 
-      setServiceData(serviceChartData);
+      setServiceData(serviceChartData as any);
 
       // Process staff data
       const staffStats: { [key: string]: { bookings: number; revenue: number } } = {};
@@ -295,8 +295,8 @@ const ReportsAnalytics = () => {
           <Card key={i} className="bg-card border-border">
             <CardContent className="p-6">
               <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-8 bg-muted rounded w-1/2"></div>
+                <div className="h-4 bg-muted rounded-xs w-3/4 mb-2"></div>
+                <div className="h-8 bg-muted rounded-xs w-1/2"></div>
               </div>
             </CardContent>
           </Card>
@@ -521,9 +521,9 @@ const ReportsAnalytics = () => {
                         <ChartTooltip 
                           content={({ active, payload }) => {
                             if (active && payload && payload.length) {
-                              const data = payload[0].payload;
+                              const data = payload[0]!.payload;
                               return (
-                                <div className="bg-popover border border-border rounded p-2">
+                                <div className="bg-popover border border-border rounded-xs p-2">
                                   <p className="text-popover-foreground font-medium">{data.name}</p>
                                   <p className="text-[#39FF14] [.light_&]:text-green-500">Revenue: {formatCurrency(data.revenue)}</p>
                                   <p className="text-blue-400">Bookings: {data.count}</p>
@@ -605,10 +605,10 @@ const ReportsAnalytics = () => {
                       content={({ active, payload, label }) => {
                         if (active && payload && payload.length) {
                           return (
-                            <div className="bg-popover border border-border rounded p-2">
+                            <div className="bg-popover border border-border rounded-xs p-2">
                               <p className="text-popover-foreground font-medium">{label}</p>
-                              <p className="text-[#39FF14] [.light_&]:text-green-500">Revenue: {formatCurrency(payload[0].value as number)}</p>
-                              <p className="text-blue-400">Bookings: {payload[0].payload.bookings}</p>
+                              <p className="text-[#39FF14] [.light_&]:text-green-500">Revenue: {formatCurrency(payload[0]?.value as number)}</p>
+                              <p className="text-blue-400">Bookings: {payload[0]?.payload.bookings}</p>
                             </div>
                           );
                         }

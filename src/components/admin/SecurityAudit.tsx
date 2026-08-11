@@ -96,11 +96,11 @@ export const SecurityAudit = () => {
     try {
       setIncidents(prev => prev.map(incident => 
         incident.id === incidentId 
-          ? { 
+          ? ({ 
               ...incident, 
               status: status as any, 
               resolved_at: status === 'resolved' ? new Date().toISOString() : undefined 
-            }
+            } as any)
           : incident
       ));
       

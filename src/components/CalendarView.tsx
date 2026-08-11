@@ -35,7 +35,7 @@ const CalendarView = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
 
@@ -65,6 +65,7 @@ const CalendarView = () => {
         .maybeSingle();
 
       if (businessError) throw businessError;
+      if (!businessData) return;
       setBusiness(businessData);
 
       // Get appointments for selected date range based on view mode
@@ -95,7 +96,7 @@ const CalendarView = () => {
 
       if (appointmentsError) throw appointmentsError;
 
-      setAppointments(appointmentsData || []);
+      setAppointments((appointmentsData || []) as any);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -209,15 +210,15 @@ const CalendarView = () => {
             />
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-emerald-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-emerald-500"></div>
                 <span className="text-muted-foreground">Confirmed</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-amber-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-amber-500"></div>
                 <span className="text-muted-foreground">Pending</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-3 h-3 rounded bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-xs bg-blue-500"></div>
                 <span className="text-muted-foreground">Completed</span>
               </div>
             </div>

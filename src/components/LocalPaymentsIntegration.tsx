@@ -66,7 +66,7 @@ const LocalPaymentsIntegration = () => {
           .select("*")
           .eq("business_id", business.id);
         
-        setPaymentMethods(methods || []);
+        setPaymentMethods((methods || []) as any);
       }
     } catch (error) {
       console.error("Error loading payment methods:", error);

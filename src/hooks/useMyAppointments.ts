@@ -36,7 +36,7 @@ export const useMyAppointments = () => {
           .order('start_time', { ascending: true });
 
         if (error) throw error;
-        setAppointments(data || []);
+        setAppointments((data || []) as any);
       } catch (error) {
         console.error('Error fetching appointments:', error);
         setAppointments([]);

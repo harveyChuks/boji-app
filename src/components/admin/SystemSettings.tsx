@@ -122,7 +122,7 @@ export const SystemSettings = () => {
         .upsert({
           setting_key: settingKey,
           setting_value: settingValue,
-          updated_by: user?.id
+          updated_by: user?.id ?? null
         }, {
           onConflict: 'setting_key'
         });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router-compat";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -82,7 +82,7 @@ const CustomerDashboard = () => {
         business_address: (apt.businesses as any).address,
       })) || [];
 
-      setAppointments(formattedAppointments);
+      setAppointments(formattedAppointments as any);
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast({
@@ -294,7 +294,7 @@ const CustomerDashboard = () => {
 
                     {/* Discount Info */}
                     {appointment.discount_percentage > 0 && (
-                      <div className="mt-3 p-2 bg-primary/5 border border-primary/20 rounded text-sm">
+                      <div className="mt-3 p-2 bg-primary/5 border border-primary/20 rounded-xs text-sm">
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground">
                             <Gift className="w-3 h-3 inline mr-1" />
@@ -370,7 +370,7 @@ const CustomerDashboard = () => {
           durationMinutes={(() => {
             const start = selectedAppointment.start_time.split(':').map(Number);
             const end = selectedAppointment.end_time.split(':').map(Number);
-            return (end[0] * 60 + end[1]) - (start[0] * 60 + start[1]);
+            return ((end[0] ?? 0) * 60 + (end[1] ?? 0)) - ((start[0] ?? 0) * 60 + (start[1] ?? 0));
           })()}
           onRescheduled={() => {
             fetchAppointments();

@@ -39,7 +39,7 @@ const FeedbackModal = ({ open, onOpenChange }: FeedbackModalProps) => {
       const { error } = await supabase
         .from('app_feedback')
         .insert({
-          user_id: user?.id,
+          user_id: user?.id ?? null,
           rating: rating,
           feedback_text: feedback || null,
         });

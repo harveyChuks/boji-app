@@ -30,7 +30,7 @@ const StaffManagement = () => {
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
     bio: "",
@@ -54,6 +54,7 @@ const StaffManagement = () => {
         .maybeSingle();
 
       if (businessError) throw businessError;
+      if (!businessData) return;
       setBusiness(businessData);
 
       // Get staff for this business
@@ -64,7 +65,7 @@ const StaffManagement = () => {
         .order('created_at', { ascending: false });
 
       if (staffError) throw staffError;
-      setStaff(staffData || []);
+      setStaff((staffData || []) as any);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
