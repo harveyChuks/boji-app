@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Calendar, Users, Scissors, Clock, Plus, Search, LogOut, Building, BarChart3, Menu, ShieldCheck, User, Camera, TrendingUp, MessageCircle, CreditCard, Settings, Home, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
