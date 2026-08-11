@@ -314,17 +314,6 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       return;
     }
 
-    // Require authentication for booking
-    if (!isAuthenticated || !user) {
-      setShowAuthModal(true);
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in or create an account to book an appointment.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!formData.customer_name || !formData.customer_phone) {
       toast({
         title: "Missing Information",
@@ -1185,6 +1174,20 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
                 >
                   {bookingLoading ? "Booking..." : "Book Appointment"}
                 </Button>
+
+                {!isAuthenticated && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    No account needed — book as a guest.{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowAuthModal(true)}
+                      className="underline text-primary hover:opacity-80"
+                    >
+                      Create an account
+                    </button>{" "}
+                    to track bookings and unlock loyalty discounts.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>

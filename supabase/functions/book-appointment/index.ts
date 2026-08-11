@@ -12,26 +12,20 @@ serve(async (req) => {
   }
 
   try {
+    // Auth is OPTIONAL: guests can book without an account.
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
 
+    // Service-role client performs the booking so guests (no session) can book.
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    let userId: string | null = null;
+    if (authHeader && !authHeader.includes(Deno.env.get('SUPABASE_ANON_KEY') ?? '\u0000')) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user } } = await supabaseClient.auth.getUser(token);
+      userId = user?.id ?? null;
     }
 
     const appointmentData = await req.json();
@@ -78,7 +72,7 @@ serve(async (req) => {
       .from('appointments')
       .insert({
         ...appointmentData,
-        customer_id: user.id,
+        customer_id: userId,
         status: 'pending'
       })
       .select(`
@@ -107,7 +101,7 @@ serve(async (req) => {
     // Fetch business and service details for email notifications
     const { data: business } = await supabaseClient
       .from('businesses')
-      .select('name, phone, email, owner_id')
+      .select('name, phone, email, owner_id, address')
       .eq('id', appointment.business_id)
       .single();
 
@@ -117,9 +111,16 @@ serve(async (req) => {
       .eq('id', appointment.service_id)
       .single();
 
-    // Send confirmation email to customer (don't await - fire and forget)
+    // Resolve the owner's email: business email first, then the account email
+    let ownerEmail: string | null = business?.email ?? null;
+    if (!ownerEmail && business?.owner_id) {
+      const { data: ownerData } = await supabaseClient.auth.admin.getUserById(business.owner_id);
+      ownerEmail = ownerData?.user?.email ?? null;
+    }
+
+    // Send confirmation email to customer
     if (appointment.customer_email && business && service) {
-      supabaseClient.functions.invoke('send-booking-confirmation', {
+      await supabaseClient.functions.invoke('send-booking-confirmation', {
         body: {
           appointmentId: appointment.id,
           customerEmail: appointment.customer_email,
@@ -131,17 +132,18 @@ serve(async (req) => {
           endTime: appointment.end_time,
           price: service.price,
           businessPhone: business.phone,
+          businessAddress: business.address,
           notes: appointment.notes
         }
       }).catch(err => console.error('Failed to send customer confirmation:', err));
     }
 
-    // Send notification email to business owner (don't await - fire and forget)
-    if (business?.email && service) {
-      supabaseClient.functions.invoke('send-owner-notification', {
+    // Send notification email to business owner
+    if (ownerEmail && service) {
+      await supabaseClient.functions.invoke('send-owner-notification', {
         body: {
           appointmentId: appointment.id,
-          ownerEmail: business.email,
+          ownerEmail,
           customerName: appointment.customer_name,
           customerPhone: appointment.customer_phone,
           customerEmail: appointment.customer_email,
