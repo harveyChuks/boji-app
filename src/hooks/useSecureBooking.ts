@@ -57,9 +57,9 @@ export const useSecureBooking = () => {
 
       const { data, error } = await supabase.functions.invoke('book-appointment', {
         body: bookingData,
-        headers: session
-          ? { Authorization: `Bearer ${session.access_token}` }
-          : undefined
+        ...(session
+          ? { headers: { Authorization: `Bearer ${session.access_token}` } }
+          : {})
       });
 
       if (error) {

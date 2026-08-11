@@ -100,7 +100,7 @@ const HyperlocalDiscovery = () => {
         user_lat: userLocation.lat,
         user_lon: userLocation.lng,
         search_radius: searchRadius,
-        search_date: selectedDate
+        ...(selectedDate !== undefined ? { search_date: selectedDate } : {})
       });
 
       if (error) throw error;

@@ -84,12 +84,12 @@ export const useBookingNotifications = (
           
           // Check what changed
           let message = '';
-          if (oldRecord.status !== newRecord.status) {
-            message = `Booking status changed to ${newRecord.status}`;
-          } else if (oldRecord.appointment_date !== newRecord.appointment_date) {
-            message = `${newRecord.customer_name} rescheduled to ${newRecord.appointment_date}`;
+          if (oldRecord['status'] !== newRecord['status']) {
+            message = `Booking status changed to ${newRecord['status']}`;
+          } else if (oldRecord['appointment_date'] !== newRecord['appointment_date']) {
+            message = `${newRecord['customer_name']} rescheduled to ${newRecord['appointment_date']}`;
           } else {
-            message = `Booking updated for ${newRecord.customer_name}`;
+            message = `Booking updated for ${newRecord['customer_name']}`;
           }
 
           // Show toast notification
@@ -128,11 +128,11 @@ export const useBookingNotifications = (
           const { data: appointment } = await supabase
             .from('appointments')
             .select('customer_name, business_id')
-            .eq('id', modification.appointment_id)
+            .eq('id', modification['appointment_id'])
             .maybeSingle(); // Use maybeSingle instead of single to prevent errors
 
           if (appointment && appointment.business_id === businessId) {
-            const message = `${appointment.customer_name} ${modification.modification_type}`;
+            const message = `${appointment.customer_name} ${modification['modification_type']}`;
             
             // Show toast notification
             toast({

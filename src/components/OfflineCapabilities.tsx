@@ -241,10 +241,6 @@ const OfflineCapabilities = () => {
         description: "Offline capabilities settings updated successfully",
       });
 
-      // Reinitialize if enabled
-      if (settings.enabled && 'serviceWorker' in navigator) {
-        await initializeServiceWorker();
-      }
     } catch (error) {
       console.error("Error saving settings:", error);
       toast({

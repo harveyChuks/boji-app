@@ -77,7 +77,7 @@ export const usePageVisitTracker = (businessId?: string) => {
     // Track the current page visit
     trackVisit({
       page_path: location.pathname,
-      business_id: businessId
+      ...(businessId !== undefined ? { business_id: businessId } : {})
     });
   }, [location.pathname, businessId]);
 
