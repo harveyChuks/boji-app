@@ -82,7 +82,7 @@ const CustomerDashboard = () => {
         business_address: (apt.businesses as any).address,
       })) || [];
 
-      setAppointments(formattedAppointments);
+      setAppointments(formattedAppointments as any);
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast({
@@ -370,7 +370,7 @@ const CustomerDashboard = () => {
           durationMinutes={(() => {
             const start = selectedAppointment.start_time.split(':').map(Number);
             const end = selectedAppointment.end_time.split(':').map(Number);
-            return (end[0] * 60 + end[1]) - (start[0] * 60 + start[1]);
+            return ((end[0] ?? 0) * 60 + (end[1] ?? 0)) - ((start[0] ?? 0) * 60 + (start[1] ?? 0));
           })()}
           onRescheduled={() => {
             fetchAppointments();

@@ -43,6 +43,7 @@ const BannerManagement = () => {
     if (!event.target.files || event.target.files.length === 0 || !business || !user) return;
 
     const file = event.target.files[0];
+    if (!file) return;
     
     // Validate file type
     if (!file.type.startsWith('image/')) {

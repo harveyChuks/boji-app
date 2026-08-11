@@ -144,7 +144,7 @@ const StatisticsOverview = () => {
         .neq('status', 'cancelled');
 
       // Calculate completion rate as a proxy for rating (4.0 + completion rate)
-      const completionRate = allNonCancelledCount > 0 ? completedCount / allNonCancelledCount : 0;
+      const completionRate = (allNonCancelledCount ?? 0) > 0 ? (completedCount ?? 0) / (allNonCancelledCount ?? 1) : 0;
       const avgRating = Math.min(4.0 + completionRate, 5.0);
 
       setStats({

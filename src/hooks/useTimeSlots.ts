@@ -33,7 +33,7 @@ export const useTimeSlots = (businessId: string, date: string, durationMinutes: 
           p_business_id: businessId,
           p_date: date,
           p_duration_minutes: durationMinutes,
-          p_staff_id: staffId || null
+          p_staff_id: (staffId || null) as any
         });
 
       if (error) {
@@ -82,8 +82,8 @@ export const useTimeSlots = (businessId: string, date: string, durationMinutes: 
         p_appointment_date: appointmentDate,
         p_start_time: startTime,
         p_end_time: endTime,
-        p_staff_id: staffId || null,
-        p_exclude_appointment_id: excludeAppointmentId || null
+        p_staff_id: (staffId || null) as any,
+        p_exclude_appointment_id: (excludeAppointmentId || null) as any
       });
 
       if (error) {
@@ -108,7 +108,7 @@ export const useTimeSlots = (businessId: string, date: string, durationMinutes: 
         p_business_id: businessId,
         p_date: date,
         p_duration_minutes: durationMinutes,
-        p_staff_id: staffId || null
+        p_staff_id: (staffId || null) as any
       });
 
       if (error) {

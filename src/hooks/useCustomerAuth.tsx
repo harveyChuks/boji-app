@@ -63,7 +63,7 @@ export const useCustomerAuth = () => {
       
       // Transform the data to match our interface
       const profile: CustomerProfile = {
-        ...data,
+        ...(data as any),
         followed_businesses: Array.isArray(data.followed_businesses) 
           ? data.followed_businesses as string[]
           : []

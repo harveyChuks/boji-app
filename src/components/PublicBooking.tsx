@@ -166,9 +166,9 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
         throw new Error('Business not found');
       }
       
-      const business = businessData[0];
+      const business = businessData[0]!;
       setBusiness({
-        ...business,
+        ...(business as any),
         currency: (business as any).currency || 'USD', // Default to USD if not set
         banner_url: (business as any).banner_url || null
       });
@@ -205,7 +205,7 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       if (workPicturesError) {
         console.error('Error fetching work pictures:', workPicturesError);
       } else {
-        setWorkPictures(workPicturesData || []);
+        setWorkPictures((workPicturesData || []) as any);
       }
 
       // Get reviews
@@ -333,8 +333,8 @@ const PublicBooking = ({ businessLink }: PublicBookingProps) => {
       
       // Convert selectedTime (12-hour format) to 24-hour format
       const convertTo24Hour = (time12h: string): string => {
-        const [time, period] = time12h.split(' ');
-        const [hours, minutes] = time.split(':');
+        const [time = '', period = ''] = time12h.split(' ');
+        const [hours = '0', minutes = '00'] = time.split(':');
         let hour24 = parseInt(hours);
         
         if (period.toLowerCase() === 'pm' && hour24 !== 12) {

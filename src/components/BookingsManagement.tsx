@@ -85,7 +85,7 @@ const BookingsManagement = () => {
 
       if (error) throw error;
 
-      setAppointments(appointmentsData || []);
+      setAppointments((appointmentsData || []) as any);
     } catch (error) {
       console.error('Error fetching appointments:', error);
     } finally {
@@ -196,7 +196,7 @@ const BookingsManagement = () => {
   };
 
   const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(':');
+    const [hours = '0', minutes = '00'] = timeString.split(':');
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;

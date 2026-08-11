@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
       if (businessError) throw businessError;
 
-      setBusinesses(businessData || []);
+      setBusinesses((businessData || []) as any);
 
       // Fetch subscription statistics
       const { data: subscriptionData, error: subError } = await supabase
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
       if (subError) throw subError;
 
-      setSubscriptions(subscriptionData || []);
+      setSubscriptions((subscriptionData || []) as any);
 
       // Calculate statistics
       const activeCount = subscriptionData?.filter(s => s.status === 'active').length || 0;

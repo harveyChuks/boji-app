@@ -39,7 +39,7 @@ const AppFeedbackViewer = () => {
 
       if (error) throw error;
 
-      setFeedback(data || []);
+      setFeedback((data || []) as any);
 
       // Calculate statistics
       const total = data?.length || 0;

@@ -197,7 +197,7 @@ const ReportsAnalytics = () => {
         }))
         .sort((a, b) => b.revenue - a.revenue);
 
-      setServiceData(serviceChartData);
+      setServiceData(serviceChartData as any);
 
       // Process staff data
       const staffStats: { [key: string]: { bookings: number; revenue: number } } = {};
@@ -521,7 +521,7 @@ const ReportsAnalytics = () => {
                         <ChartTooltip 
                           content={({ active, payload }) => {
                             if (active && payload && payload.length) {
-                              const data = payload[0].payload;
+                              const data = payload[0]!.payload;
                               return (
                                 <div className="bg-popover border border-border rounded-xs p-2">
                                   <p className="text-popover-foreground font-medium">{data.name}</p>
@@ -607,8 +607,8 @@ const ReportsAnalytics = () => {
                           return (
                             <div className="bg-popover border border-border rounded-xs p-2">
                               <p className="text-popover-foreground font-medium">{label}</p>
-                              <p className="text-[#39FF14] [.light_&]:text-green-500">Revenue: {formatCurrency(payload[0].value as number)}</p>
-                              <p className="text-blue-400">Bookings: {payload[0].payload.bookings}</p>
+                              <p className="text-[#39FF14] [.light_&]:text-green-500">Revenue: {formatCurrency(payload[0]?.value as number)}</p>
+                              <p className="text-blue-400">Bookings: {payload[0]?.payload.bookings}</p>
                             </div>
                           );
                         }

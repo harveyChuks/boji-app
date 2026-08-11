@@ -84,7 +84,7 @@ const ServicesManagement = () => {
           .eq('business_id', business.id)
           .order('created_at', { ascending: false });
         
-        setServices(servicesData || []);
+        setServices((servicesData || []) as any);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -354,7 +354,7 @@ const ServicesManagement = () => {
                 />
                 {formData.service_type && SERVICE_SUGGESTIONS[formData.service_type] && (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {SERVICE_SUGGESTIONS[formData.service_type]
+                    {SERVICE_SUGGESTIONS[formData.service_type]!
                       .filter(suggestion => 
                         suggestion.toLowerCase().includes(formData.name.toLowerCase())
                       )

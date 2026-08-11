@@ -35,7 +35,7 @@ const CalendarView = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
 
@@ -65,6 +65,7 @@ const CalendarView = () => {
         .maybeSingle();
 
       if (businessError) throw businessError;
+      if (!businessData) return;
       setBusiness(businessData);
 
       // Get appointments for selected date range based on view mode
@@ -95,7 +96,7 @@ const CalendarView = () => {
 
       if (appointmentsError) throw appointmentsError;
 
-      setAppointments(appointmentsData || []);
+      setAppointments((appointmentsData || []) as any);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({

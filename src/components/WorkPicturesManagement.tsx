@@ -25,7 +25,7 @@ const WorkPicturesManagement = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<any>(null);
   const [workPictures, setWorkPictures] = useState<WorkPicture[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ description: "", service_type: "" });
@@ -79,6 +79,7 @@ const WorkPicturesManagement = () => {
         .maybeSingle();
 
       if (businessError) throw businessError;
+      if (!businessData) return;
       setBusiness(businessData);
 
       const { data: picturesData, error: picturesError } = await supabase
@@ -93,7 +94,7 @@ const WorkPicturesManagement = () => {
       if (!picturesData || picturesData.length === 0) {
         setWorkPictures(mockPictures);
       } else {
-        setWorkPictures(picturesData);
+        setWorkPictures(picturesData as any);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -129,7 +130,7 @@ const WorkPicturesManagement = () => {
 
       if (error) throw error;
 
-      setWorkPictures(prev => [data, ...prev.filter(p => !p.id.startsWith('mock-'))]);
+      setWorkPictures(prev => [data as any, ...prev.filter(p => !p.id.startsWith('mock-'))]);
       
       toast({
         title: "Image Uploaded",

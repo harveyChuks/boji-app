@@ -58,7 +58,7 @@ const Index = () => {
   const themeInfo = useTimeBasedTheme(!isAuthenticated);
   
   // State for business
-  const [userBusiness, setUserBusiness] = useState(null);
+  const [userBusiness, setUserBusiness] = useState<any>(null);
 
   // Pop-up alert for new bookings needing confirmation
   const [pendingBooking, setPendingBooking] = useState<PendingBooking | null>(null);
@@ -88,8 +88,8 @@ const Index = () => {
   }, [isNativeMobile, authLoading, isAuthenticated]);
   const [activeSection, setActiveSection] = useState<string>('home');
   const [searchTerm, setSearchTerm] = useState("");
-  const [todayAppointments, setTodayAppointments] = useState([]);
-  const [recentClients, setRecentClients] = useState([]);
+  const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
+  const [recentClients, setRecentClients] = useState<any[]>([]);
   const [stats, setStats] = useState({
     todayAppointments: 0,
     totalClients: 0,
@@ -114,7 +114,7 @@ const Index = () => {
         throw error;
       }
 
-      setUserBusiness(data);
+      setUserBusiness(data as any);
       
       // Debug log to check currency
       console.log('Business currency:', data?.currency);
@@ -145,7 +145,7 @@ const Index = () => {
         .eq('business_id', userBusiness.id)
         .eq('appointment_date', today);
 
-      setTodayAppointments(appointments || []);
+      setTodayAppointments((appointments || []) as any);
 
       // Fetch recent clients from customers who have appointments with this business
       const { data: clients } = await supabase
@@ -160,7 +160,7 @@ const Index = () => {
         .order('created_at', { ascending: false })
         .limit(4);
 
-      setRecentClients(clients || []);
+      setRecentClients((clients || []) as any);
 
       // Calculate total clients for this business
       const { count: totalClientsCount } = await supabase

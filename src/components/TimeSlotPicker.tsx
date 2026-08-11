@@ -106,7 +106,7 @@ const TimeSlotPicker = ({
     if (date === today) {
       const now = new Date();
       const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes
-      const [slotHours, slotMinutes] = s.slot_time.split(':').map(Number);
+      const [slotHours = 0, slotMinutes = 0] = s.slot_time.split(':').map(Number);
       const slotTimeInMinutes = slotHours * 60 + slotMinutes;
       
       // Filter out slots that are in the past
@@ -120,7 +120,7 @@ const TimeSlotPicker = ({
   
   // Group slots by time of day
   const getTimeOfDay = (timeString: string) => {
-    const hour = parseInt(timeString.split(':')[0]);
+    const hour = parseInt(timeString.split(':')[0] ?? '0');
     if (hour < 12) return 'morning';
     if (hour < 17) return 'afternoon';
     return 'evening';

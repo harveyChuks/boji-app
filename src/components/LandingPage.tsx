@@ -37,7 +37,7 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
     
     const interval = setInterval(() => {
       index = (index + 1) % benefits.length;
-      setAnimatedText(benefits[index]);
+      setAnimatedText(benefits[index] ?? '');
     }, 2000);
     
     return () => clearInterval(interval);
